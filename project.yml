@@ -1,0 +1,23 @@
+name: SankofaExampleIOS
+options:
+  bundleIdPrefix: dev.sankofa.example
+targets:
+  SankofaExampleIOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - Sources/SankofaExampleIOS
+    dependencies:
+      - package: SankofaIOS
+    settings:
+      base:
+        INFOPLIST_FILE: Sources/SankofaExampleIOS/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: dev.sankofa.example.SankofaExampleIOS
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: YES
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0.0
+packages:
+  SankofaIOS:
+    path: ../../sdks/sankofa_sdk_ios
