@@ -19,9 +19,17 @@ struct SankofaExampleApp: App {
                 recordSessions: true,
                 maskAllInputs:true,
                 captureScale:  0.35,
-                
+
             )
         )
+
+        // Seed Switch + Config defaults so the Lab view has something
+        // to render before the first handshake lands (offline first-
+        // launch, slow network, etc.). Both modules self-register with
+        // the Traffic Cop on first access — the .shared touch here is
+        // what wires handshake payloads into them.
+        _ = SankofaSwitch.shared.withDefaults(DemoFlag.defaults)
+        _ = SankofaRemoteConfig.shared.withDefaults(DemoConfig.defaults)
     }
 
     var body: some Scene {

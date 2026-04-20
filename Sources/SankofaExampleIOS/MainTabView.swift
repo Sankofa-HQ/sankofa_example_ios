@@ -21,10 +21,15 @@ struct MainTabView: View {
                 .tabItem { Label("Replay", systemImage: "record.circle") }
                 .tag(2)
 
+            FlagsLabView()
+                .sankofaScreen("Flags Lab")
+                .tabItem { Label("Lab", systemImage: "flask") }
+                .tag(3)
+
             SettingsView()
                 .sankofaScreen("Settings")
                 .tabItem { Label("Settings", systemImage: "gear") }
-                .tag(3)
+                .tag(4)
         }
         .accentColor(.purple)
     }
