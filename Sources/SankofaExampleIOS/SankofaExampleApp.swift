@@ -30,6 +30,16 @@ struct SankofaExampleApp: App {
         // what wires handshake payloads into them.
         _ = SankofaSwitch.shared.withDefaults(DemoFlag.defaults)
         _ = SankofaRemoteConfig.shared.withDefaults(DemoConfig.defaults)
+
+        // ─── Catch (error tracking) ──────────────────────────────────────────
+        // Install the uncaught-exception + native-signal handlers early
+        // so any crash that happens later in the app lifecycle lands
+        // in the dashboard. Idempotent — safe to call more than once.
+        _ = SankofaCatch.shared.start(
+            environment: "dev",
+            release: "example-ios@1.0.0",
+            appVersion: "1.0.0"
+        )
     }
 
     var body: some Scene {

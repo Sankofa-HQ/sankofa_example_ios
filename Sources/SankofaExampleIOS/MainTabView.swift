@@ -26,10 +26,15 @@ struct MainTabView: View {
                 .tabItem { Label("Lab", systemImage: "flask") }
                 .tag(3)
 
+            CrashGalleryView()
+                .sankofaScreen("Catch Gallery")
+                .tabItem { Label("Catch", systemImage: "ladybug.fill") }
+                .tag(4)
+
             SettingsView()
                 .sankofaScreen("Settings")
                 .tabItem { Label("Settings", systemImage: "gear") }
-                .tag(4)
+                .tag(5)
         }
         .accentColor(.purple)
     }

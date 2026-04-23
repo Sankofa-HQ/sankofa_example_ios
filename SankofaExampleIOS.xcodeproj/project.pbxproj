@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8CB60FA62F792DF70011FC58 /* SankofaIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 8CB60FA52F792DF70011FC58 /* SankofaIOS */; };
+		CrashGalleryView_swift_BuildFile /* CrashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CrashGalleryView_swift_FileRef /* CrashGalleryView.swift */; };
 		IdentityView_swift_BuildFile /* IdentityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IdentityView_swift_FileRef /* IdentityView.swift */; };
 		MainTabView_swift_BuildFile /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MainTabView_swift_FileRef /* MainTabView.swift */; };
 		SankofaExampleApp_swift_BuildFile /* SankofaExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = SankofaExampleApp_swift_FileRef /* SankofaExampleApp.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CrashGalleryView_swift_FileRef /* CrashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashGalleryView.swift; sourceTree = "<group>"; };
 		IdentityView_swift_FileRef /* IdentityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityView.swift; sourceTree = "<group>"; };
 		Info_plist_FileRef /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		MainTabView_swift_FileRef /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 				TrackingView_swift_FileRef /* TrackingView.swift */,
 				IdentityView_swift_FileRef /* IdentityView.swift */,
 				SessionReplayView_swift_FileRef /* SessionReplayView.swift */,
+				CrashGalleryView_swift_FileRef /* CrashGalleryView.swift */,
 				SettingsView_swift_FileRef /* SettingsView.swift */,
 				Info_plist_FileRef /* Info.plist */,
 			);
@@ -156,6 +159,7 @@
 				TrackingView_swift_BuildFile /* TrackingView.swift in Sources */,
 				IdentityView_swift_BuildFile /* IdentityView.swift in Sources */,
 				SessionReplayView_swift_BuildFile /* SessionReplayView.swift in Sources */,
+				CrashGalleryView_swift_BuildFile /* CrashGalleryView.swift in Sources */,
 				SettingsView_swift_BuildFile /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
