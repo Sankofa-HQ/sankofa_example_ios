@@ -151,3 +151,30 @@ struct DemoPricingTier {
         }
     }
 }
+
+// Demo Pulse survey IDs — match `seed_pulse` (server cmd) so a
+// freshly-seeded project has eligible surveys for every demo flow.
+enum DemoSurvey {
+    static let npsAfterCheckout = "psv_demo_nps_checkout"
+    static let csatSupport      = "psv_demo_csat_support"
+    static let productResearch  = "psv_demo_product_research"
+
+    static var all: [String] {
+        [npsAfterCheckout, csatSupport, productResearch]
+    }
+
+    static let titles: [String: String] = [
+        npsAfterCheckout: "Post-checkout NPS",
+        csatSupport:      "Support CSAT",
+        productResearch:  "Product research (gated)",
+    ]
+
+    static let descriptions: [String: String] = [
+        npsAfterCheckout:
+            "Score 0–10. Detractors get a 'what went wrong' follow-up via branching.",
+        csatSupport:
+            "Single 1–5 star rating. Smallest possible survey.",
+        productResearch:
+            "Multi-question. Targeting rule requires user_property 'plan' = 'pro'.",
+    ]
+}

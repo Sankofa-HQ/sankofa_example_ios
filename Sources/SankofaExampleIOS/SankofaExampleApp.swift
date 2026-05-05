@@ -40,6 +40,13 @@ struct SankofaExampleApp: App {
             release: "example-ios@1.0.0",
             appVersion: "1.0.0"
         )
+
+        // ─── Pulse (in-app surveys) ───────────────────────────────────────
+        // Pulse needs init() to have completed first because register()
+        // pulls the apiKey + endpoint at registration time. The Pulse
+        // tab below surfaces a "not registered" message if this returns
+        // false (typically only when the SDK init failed).
+        _ = SankofaPulse.shared.register()
     }
 
     var body: some Scene {

@@ -31,10 +31,15 @@ struct MainTabView: View {
                 .tabItem { Label("Catch", systemImage: "ladybug.fill") }
                 .tag(4)
 
+            PulseLabView()
+                .sankofaScreen("Pulse Lab")
+                .tabItem { Label("Pulse", systemImage: "bubble.left.and.bubble.right.fill") }
+                .tag(5)
+
             SettingsView()
                 .sankofaScreen("Settings")
                 .tabItem { Label("Settings", systemImage: "gear") }
-                .tag(5)
+                .tag(6)
         }
         .accentColor(.purple)
     }
