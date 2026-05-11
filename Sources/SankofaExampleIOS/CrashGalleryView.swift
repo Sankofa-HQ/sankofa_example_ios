@@ -180,6 +180,37 @@ struct CrashGalleryView: View {
                     )
                 }
 
+                Section("Phase B — withScope + beforeSend") {
+                    row(
+                        title: "withScope — temporary overlay",
+                        detail: "Tags + level + extras on ONE capture only",
+                        symbol: "scope",
+                        tint: .green,
+                        action: triggerWithScope
+                    )
+                    row(
+                        title: "withScope — nested scopes",
+                        detail: "Inner scope inherits + extends outer",
+                        symbol: "square.on.square",
+                        tint: .green,
+                        action: triggerNestedScope
+                    )
+                    row(
+                        title: "beforeSend — see SankofaExampleApp",
+                        detail: "Fires events the hook should drop or scrub",
+                        symbol: "lock.shield",
+                        tint: .green,
+                        action: triggerBeforeSendDemo
+                    )
+                    row(
+                        title: "Trigger main-queue stall",
+                        detail: "Sleep main 3s; detector fires an 'anr' event",
+                        symbol: "tortoise",
+                        tint: .yellow,
+                        action: triggerMainQueueStall
+                    )
+                }
+
                 Section("Status") {
                     HStack(alignment: .top, spacing: 8) {
                         if let level = lastEventLevel {
@@ -410,6 +441,84 @@ struct CrashGalleryView: View {
     }
 
     #endif
+
+    // MARK: - Phase B — withScope + beforeSend
+
+    /// Sentry-style withScope: tags + level + extras attached to ONE
+    /// capture only. The global scope set in `bootstrapContext()` is
+    /// untouched.
+    private func triggerWithScope() {
+        announce("Triggering withScope (one-shot overlay)…")
+        Sankofa.withScope { scope in
+            scope.setTag("checkout_step", "payment")
+            scope.setTag("payment_method", "stripe")
+            scope.setExtra("cart_id", AnyCodable("cart_8x92Lq"))
+            scope.setExtra("cart_value_cents", AnyCodable(4_900))
+            scope.setLevel(.warning)
+            scope.setFingerprint(["checkout", "payment", "manual"])
+            _ = Sankofa.captureMessage("payment gateway timeout — retried 3x")
+        }
+        // Subsequent captures lose the scope.
+        _ = Sankofa.captureMessage("post-scope event — no checkout_step tag")
+        lastEventLevel = .warning
+        status = "Fired scoped + global events"
+        triggerCount += 1
+    }
+
+    /// Nested scopes: the inner closure inherits the outer's tags +
+    /// extras at capture time, then layers its own on top.
+    private func triggerNestedScope() {
+        announce("Triggering nested withScope…")
+        Sankofa.withScope { outer in
+            outer.setTag("feature", "billing")
+            outer.setExtra("checkout_session", AnyCodable("sess_12345"))
+            Sankofa.withScope { inner in
+                inner.setTag("substep", "card-validation")
+                inner.setExtra("attempt", AnyCodable(2))
+                // Carries BOTH feature=billing (outer) AND
+                // substep=card-validation (inner).
+                _ = Sankofa.captureMessage("invalid card number checksum")
+            }
+            // After inner scope pops, only outer's tags apply.
+            _ = Sankofa.captureMessage("still in outer scope (no substep tag)")
+        }
+        lastEventLevel = .info
+        status = "Fired nested-scope events"
+        triggerCount += 1
+    }
+
+    /// Fires events the `beforeSend` hook configured in
+    /// `SankofaExampleApp.swift` should drop or scrub.
+    private func triggerBeforeSendDemo() {
+        announce("Firing beforeSend demo events…")
+        // 1. "[noise]" marker → beforeSend returns nil → dropped.
+        _ = Sankofa.captureMessage("[noise] framework warning — drop me")
+        // 2. PII scrubbed — beforeSend rewrites user_email before send.
+        _ = Sankofa.captureMessage(
+            "checkout failure — beforeSend should scrub user_email",
+            options: SankofaCatch.CaptureOptions(
+                level: .info,
+                extra: [
+                    "user_email": AnyCodable("ada@example.com"),
+                    "note": AnyCodable("beforeSend should redact user_email"),
+                ]
+            )
+        )
+        lastEventLevel = .info
+        status = "Fired drop + scrub events"
+        triggerCount += 1
+    }
+
+    /// Block the main queue for 3 seconds. The Sankofa stall detector
+    /// (2s default threshold) picks this up and emits an `anr` event
+    /// without taking down the app.
+    private func triggerMainQueueStall() {
+        announce("Stalling main queue 3s — detector will fire an anr event…")
+        Thread.sleep(forTimeInterval: 3.0)
+        lastEventLevel = .warning
+        status = "Main queue resumed; check dashboard for anr event"
+        triggerCount += 1
+    }
 
     // MARK: - Context bootstrap
 

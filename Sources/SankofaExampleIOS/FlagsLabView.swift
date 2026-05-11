@@ -12,8 +12,16 @@ struct FlagsLabView: View {
     @State private var flags: [String: FlagDecision] = [:]
     @State private var config: [String: ItemDecision] = [:]
     @State private var cancellations: [Cancellation] = []
+    @State private var scrollOffset: CGFloat = 0
+    @State private var scrollHandle: SankofaScrollContainerHandle?
 
     var body: some View {
+        // Sankofa.shared.tagScrollContainer — registers a scroll-offset
+        // provider so heatmap touch attribution + replay frames carry
+        // the right Y coordinate for below-the-fold taps. On iOS 16+
+        // SwiftUI's ScrollView bridges to UIScrollView and the UIKit
+        // walker handles this automatically, so this provider is the
+        // belt-and-braces fallback for older OS versions + custom hosts.
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Maintenance banner
@@ -37,12 +45,36 @@ struct FlagsLabView: View {
                 }
             }
             .padding()
+            .background(GeometryReader { geo in
+                Color.clear.preference(
+                    key: ScrollOffsetKey.self,
+                    value: -geo.frame(in: .named("flagsLabScroll")).minY
+                )
+            })
         }
+        .coordinateSpace(name: "flagsLabScroll")
+        .onPreferenceChange(ScrollOffsetKey.self) { scrollOffset = $0 }
         .background(Color(red: 0.06, green: 0.06, blue: 0.10))
-        .onAppear(perform: subscribe)
+        .onAppear {
+            subscribe()
+            scrollHandle = Sankofa.shared.tagScrollContainer { scrollOffset }
+        }
         .onDisappear {
+            scrollHandle?.remove()
+            scrollHandle = nil
             for c in cancellations { c.cancel() }
             cancellations.removeAll()
+        }
+    }
+
+    /// PreferenceKey used to plumb the SwiftUI `ScrollView`'s content
+    /// offset out to a parent's `@State`. The negative sign on the
+    /// background flips "content scrolled up by N" to "Y offset is N",
+    /// matching what `Sankofa.shared.tagScrollContainer { ... }` expects.
+    private struct ScrollOffsetKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
         }
     }
 
